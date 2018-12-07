@@ -5,7 +5,7 @@
   
 
 
-<html class="theme-next mist use-motion" lang="zh-Hans">
+<html class="theme-next gemini use-motion" lang="zh-Hans">
 <head>
   <meta charset="UTF-8"/>
 <meta http-equiv="X-UA-Compatible" content="IE=edge" />
@@ -93,7 +93,7 @@
   var NexT = window.NexT || {};
   var CONFIG = {
     root: '/',
-    scheme: 'Mist',
+    scheme: 'Gemini',
     version: '5.1.3',
     sidebar: {"position":"left","display":"post","offset":12,"b2t":false,"scrollpercent":false,"onmobile":false},
     fancybox: true,
@@ -372,19 +372,33 @@
 <li>订单记录页</li>
 </ul>
 <p>第一次做小程序，难免遇到问题，在此记录一下，希望自己在以后的小程序开发中避免此类问题。</p>
-<h6 id="1-遇到了一个mpvue的bug"><a href="#1-遇到了一个mpvue的bug" class="headerlink" title="1. 遇到了一个mpvue的bug"></a>1. 遇到了一个mpvue的bug</h6><p>按照mpvue的文档生成了项目，在小程序开发者工具中打开时报</p>
+<h5 id="1-遇到了一个mpvue的bug"><a href="#1-遇到了一个mpvue的bug" class="headerlink" title="1. 遇到了一个mpvue的bug"></a>1. 遇到了一个mpvue的bug</h5><p>按照mpvue的文档生成了项目，在小程序开发者工具中打开时报</p>
 <figure class="highlight bash"><table><tr><td class="gutter"><pre><span class="line">1</span><br></pre></td><td class="code"><pre><span class="line">未找到入口 app.json 文件，或者文件读取失败，请检查后重新编译。</span><br></pre></td></tr></table></figure>
 <p>出现这个问题后首先是问了一个用过mpvue的朋友，生成项目框架后是否还需要配置什么文件，对方表示不需要，然后用mpvue新生成一个项目，遇到同样问题。</p>
-<p>后来仔细看了下项目结构和官方文档，官方文档是说dist目录下生成小程序的相关代码。项目配置文件 <figure class="highlight plain"><figcaption><span>```中的 ```miniprogramRoot```（自定义构建完的文件的根路径）设置的是<font color<="" span=""></font></span></figcaption><table><tr><td class="gutter"><pre><span class="line">1</span><br><span class="line">2</span><br></pre></td><td class="code"><pre><span class="line">```</span><br><span class="line">&quot;miniprogramRoot&quot;: &quot;dist/wx/&quot;</span><br></pre></td></tr></table></figure></p>
+<p>后来仔细看了下项目结构和官方文档，官方文档是说dist目录下生成小程序的相关代码。项目配置文件 <code>project.config.json</code>中的 <code>miniprogramRoot</code>（自定义构建完的文件的根路径）设置的是<font color="green">“/dist”</font>,但是项目dist目录下还有一层wx目录，wx目录下才是生成的小城需代码，于是修改配置文件：</p>
+<figure class="highlight plain"><table><tr><td class="gutter"><pre><span class="line">1</span><br></pre></td><td class="code"><pre><span class="line">&quot;miniprogramRoot&quot;: &quot;dist/wx/&quot;</span><br></pre></td></tr></table></figure>
 <p>重启项目，不再报错。不过这个问题已经被修复了，现在用mpvue生成项目不需要修改配置文件了。</p>
-<h6 id="2-mpvue中不支持swiper插件"><a href="#2-mpvue中不支持swiper插件" class="headerlink" title="2. mpvue中不支持swiper插件"></a>2. mpvue中不支持swiper插件</h6><p>目前mpvue中很多第三方的UI库是引入不了的，因为不支持DOM操作，所以直接用小程序的<code>swiper</code>组件即可。</p>
+<h5 id="2-mpvue中不支持swiper插件"><a href="#2-mpvue中不支持swiper插件" class="headerlink" title="2. mpvue中不支持swiper插件"></a>2. mpvue中不支持swiper插件</h5><p>目前mpvue中很多第三方的UI库是引入不了的，因为不支持DOM操作，所以直接用小程序的<code>swiper</code>组件即可。</p>
 <p>原生小程序中的使用方法为：</p>
 <figure class="highlight plain"><table><tr><td class="gutter"><pre><span class="line">1</span><br><span class="line">2</span><br><span class="line">3</span><br><span class="line">4</span><br><span class="line">5</span><br><span class="line">6</span><br><span class="line">7</span><br><span class="line">8</span><br></pre></td><td class="code"><pre><span class="line">&lt;swiper indicator-dots=&quot;&#123;&#123;indicatorDots&#125;&#125;&quot;</span><br><span class="line">  autoplay=&quot;&#123;&#123;autoplay&#125;&#125;&quot; interval=&quot;&#123;&#123;interval&#125;&#125;&quot; duration=&quot;&#123;&#123;duration&#125;&#125;&quot;&gt;</span><br><span class="line">  &lt;block wx:for=&quot;&#123;&#123;imgUrls&#125;&#125;&quot;&gt;</span><br><span class="line">    &lt;swiper-item&gt;</span><br><span class="line">      &lt;image src=&quot;&#123;&#123;item&#125;&#125;&quot; class=&quot;slide-image&quot; width=&quot;355&quot; height=&quot;150&quot;/&gt;</span><br><span class="line">    &lt;/swiper-item&gt;</span><br><span class="line">  &lt;/block&gt;</span><br><span class="line">&lt;/swiper&gt;</span><br></pre></td></tr></table></figure>
-<p>mpvue 中稍有区别：<br><figure class="highlight plain"><table><tr><td class="gutter"><pre><span class="line">1</span><br><span class="line">2</span><br><span class="line">3</span><br><span class="line">4</span><br><span class="line">5</span><br><span class="line">6</span><br><span class="line">7</span><br><span class="line">8</span><br><span class="line">9</span><br><span class="line">10</span><br></pre></td><td class="code"><pre><span class="line">&lt;swiper :indicator-dots=&quot;indicatorDots&quot; :circular=&quot;circular&quot;</span><br><span class="line">            :autoplay=&quot;autoplay&quot; :interval=&quot;interval&quot; :duration=&quot;duration&quot;</span><br><span class="line">            :indicator-color=&quot;indicatorColor&quot; </span><br><span class="line">            :indicator-active-color=&quot;indicatorActiveColor&quot;&gt;</span><br><span class="line">   &lt;block v-for=&quot;(item,index) in imgUrls&quot; :key=&quot;index&quot;&gt;</span><br><span class="line">      &lt;swiper-item&gt;</span><br><span class="line">        &lt;image :src=&quot;item.imgName&quot; mode=&quot;widthFix&quot;/&gt;</span><br><span class="line">      &lt;/swiper-item&gt;</span><br><span class="line">   &lt;/block&gt;</span><br><span class="line">&lt;/swiper&gt;</span><br></pre></td></tr></table></figure></p>
-<h6 id="3-小程序获取用户授权信息"><a href="#3-小程序获取用户授权信息" class="headerlink" title="3. 小程序获取用户授权信息"></a>3. 小程序获取用户授权信息</h6><p>小程序从18年4月30日开始，不再支持使用 <code>wx.getUserInfo</code> 接口直接弹出授权框的开发方式，而是改用 <code>button</code> 组件的登录方式，用户通过点击按钮弹出授权框。</p>
-<p>项目要求在首页的四个入口处点击都要先判断是否授权</p>
-<pre><code>&lt;button class=&quot;auth-btn&quot; v-if=&quot;!isAuth&quot; type=&quot;primary&quot; open-type=&quot;getUserInfo&quot; @getuserinfo=&quot;bindGetUserInfo($event,item.authType)&quot;&gt;&lt;/button&gt;
-</code></pre>
+<p>mpvue 中稍有区别：</p>
+<figure class="highlight plain"><table><tr><td class="gutter"><pre><span class="line">1</span><br><span class="line">2</span><br><span class="line">3</span><br><span class="line">4</span><br><span class="line">5</span><br><span class="line">6</span><br><span class="line">7</span><br><span class="line">8</span><br><span class="line">9</span><br><span class="line">10</span><br></pre></td><td class="code"><pre><span class="line">&lt;swiper :indicator-dots=&quot;indicatorDots&quot; :circular=&quot;circular&quot;</span><br><span class="line">            :autoplay=&quot;autoplay&quot; :interval=&quot;interval&quot; :duration=&quot;duration&quot;</span><br><span class="line">            :indicator-color=&quot;indicatorColor&quot; </span><br><span class="line">            :indicator-active-color=&quot;indicatorActiveColor&quot;&gt;</span><br><span class="line">   &lt;block v-for=&quot;(item,index) in imgUrls&quot; :key=&quot;index&quot;&gt;</span><br><span class="line">      &lt;swiper-item&gt;</span><br><span class="line">        &lt;image :src=&quot;item.imgName&quot; mode=&quot;widthFix&quot;/&gt;</span><br><span class="line">      &lt;/swiper-item&gt;</span><br><span class="line">   &lt;/block&gt;</span><br><span class="line">&lt;/swiper&gt;</span><br></pre></td></tr></table></figure>
+<h5 id="3-小程序获取用户授权信息"><a href="#3-小程序获取用户授权信息" class="headerlink" title="3. 小程序获取用户授权信息"></a>3. 小程序获取用户授权信息</h5><p>小程序从18年4月30日开始，不再支持使用 <code>wx.getUserInfo</code> 接口直接弹出授权框的开发方式，而是改用 <code>button</code> 组件的登录方式，用户通过点击按钮弹出授权框。</p>
+<figure class="highlight plain"><table><tr><td class="gutter"><pre><span class="line">1</span><br><span class="line">2</span><br></pre></td><td class="code"><pre><span class="line"></span><br><span class="line">&lt;button class=&quot;auth-btn&quot; v-if=&quot;!isAuth&quot; type=&quot;primary&quot; open-type=&quot;getUserInfo&quot; @getuserinfo=&quot;bindGetUserInfo($event,item.authType)&quot;&gt;&lt;/button&gt;</span><br></pre></td></tr></table></figure>
+<p>项目要求在首页的四个入口处点击都要先判断是否授权，实现方法如下：</p>
+<ul>
+<li>通过css将button设置为透明背景，遮盖在点击需要判断是否授权的元素上</li>
+<li><code>onload()</code> 函数中通过判断 <code>wx.getSetting()</code> 接口获取到的 <code>authSetting[&#39;scope.userInfo&#39;]</code> 是否为空来判断是否需要授权，如果不为空，说明用户已经授权,isAuth设为true，页面不渲染button</li>
+<li>如果为空，则页面渲染button，用户点击button的时候弹出授权框</li>
+</ul>
+<h5 id="4-原生小程序和mpvue获取用户信息的区别"><a href="#4-原生小程序和mpvue获取用户信息的区别" class="headerlink" title="4. 原生小程序和mpvue获取用户信息的区别"></a>4. 原生小程序和mpvue获取用户信息的区别</h5><p>小程序开发文档中有说明，在button组件上使用 <code>bindgetuserinfo</code> 钩子函数可以获取到用户信息<br>但是mpvue不支持bindGetUserInfo钩子，所以需要变相支持</p>
+<figure class="highlight plain"><table><tr><td class="gutter"><pre><span class="line">1</span><br></pre></td><td class="code"><pre><span class="line">&lt;button open-type=&quot;getUserInfo&quot;  @getuserinfo=&quot;bindGetUserInfo&quot;&gt;获取用户信息&lt;/button&gt;</span><br></pre></td></tr></table></figure>
+<p>事件名与函数名不能变</p>
+<figure class="highlight plain"><table><tr><td class="gutter"><pre><span class="line">1</span><br><span class="line">2</span><br><span class="line">3</span><br><span class="line">4</span><br></pre></td><td class="code"><pre><span class="line">methods: &#123;</span><br><span class="line">    bindGetUserInfo (e) &#123;</span><br><span class="line">    console.log(e.mp.detail.userInfo)</span><br><span class="line">  &#125;</span><br></pre></td></tr></table></figure>
+<h5 id="5-用户数据解密问题"><a href="#5-用户数据解密问题" class="headerlink" title="5. 用户数据解密问题"></a>5. 用户数据解密问题</h5><p>因为项目涉及到小程序的下单支付，所以需要用到用户的 <code>openId</code> 和 <code>unionId</code>，通过上面说过的钩子函数可以获取到rawData(用户名，头像，性别等)，iv 和encrytedData(包含用户unionId等私密数据的加密数据)。解密主要是后端来处理，我需要传给他iv，encrytedData 和code（通过 <code>wx.login</code> 接口获取）</p>
+<p>因为上面授权的时候已经能够获取到iv和encrytedData，那么我只要再获取到登录的code不就可以了吗?结果。。。脸很疼。。。后端接口直接报解密失败。。。</p>
+<p>然后各种查资料，才知道必须要先调用 <code>wx.login</code> 接口获取code,然后再通过 <code>wx.getUserInfo</code> 接口获取iv和encrytedData (因为后端需要用code来获取session_key 和 openid，session_key 是用来校验用户信息和解密数据，所以encrytedData必须是登录态获取到的encrytedData)</p>
+
           
         
       
@@ -544,7 +558,7 @@
 
 
 
-  <div class="theme-info">主题 &mdash; <a class="theme-link" target="_blank" href="https://github.com/iissnan/hexo-theme-next">NexT.Mist</a> v5.1.3</div>
+  <div class="theme-info">主题 &mdash; <a class="theme-link" target="_blank" href="https://github.com/iissnan/hexo-theme-next">NexT.Gemini</a> v5.1.3</div>
 
 
 
@@ -643,6 +657,13 @@
 
   
   
+
+
+  <script type="text/javascript" src="/js/src/affix.js?v=5.1.3"></script>
+
+  <script type="text/javascript" src="/js/src/schemes/pisces.js?v=5.1.3"></script>
+
+
 
   
 
